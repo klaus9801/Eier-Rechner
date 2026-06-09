@@ -1,35 +1,96 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#f5b642" />
-  <title>Eier-Kochzeit-Rechner</title>
-  <style>
-    :root { --bg:#fff8ea; --card:#ffffff; --ink:#262018; --muted:#71675d; --accent:#f5b642; --accent2:#ffe0a3; --border:#ead8b9; --ok:#2f7d49; }
-    *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(180deg,var(--bg),#fff);color:var(--ink)}
-    .wrap{max-width:760px;margin:0 auto;padding:20px 16px 80px}.hero{text-align:center;padding:18px 4px 10px}.egg{font-size:58px;line-height:1}.hero h1{margin:8px 0 6px;font-size:30px}.hero p{margin:0;color:var(--muted)}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:22px;box-shadow:0 8px 24px rgba(91,66,19,.08);padding:18px;margin:14px 0}.grid{display:grid;grid-template-columns:1fr;gap:14px}@media(min-width:680px){.grid{grid-template-columns:1fr 1fr}}
-    label{display:block;font-weight:700;margin:0 0 6px}.hint{font-size:13px;color:var(--muted);margin-top:4px} input,select{width:100%;font-size:18px;padding:13px 12px;border:1px solid var(--border);border-radius:14px;background:#fff;color:var(--ink)}
-    .switch{display:flex;gap:10px}.switch button,.stage button,.timer button{border:1px solid var(--border);background:#fff;border-radius:14px;padding:12px 13px;font-size:16px;font-weight:700;color:var(--ink)}.switch button.active,.stage button.active{background:var(--accent);border-color:#d99b27}
-    .stage{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(min-width:680px){.stage{grid-template-columns:repeat(5,1fr)}}.stage small{display:block;font-weight:500;color:var(--muted);margin-top:4px}.result{display:grid;gap:12px;align-items:center}@media(min-width:680px){.result{grid-template-columns:1.1fr .9fr}}
-    .time{font-size:52px;font-weight:800;letter-spacing:-1px}.sub{color:var(--muted);line-height:1.45}.pill{display:inline-block;background:var(--accent2);border-radius:999px;padding:6px 10px;font-weight:700;margin:4px 6px 0 0}.details{font-size:14px;color:var(--muted);line-height:1.55}.timerbox{text-align:center;background:#fffaf0;border:1px dashed #dfbc72;border-radius:18px;padding:16px}.count{font-size:44px;font-weight:800;margin:4px 0 12px}.timer{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.timer button.primary{background:var(--accent);border-color:#d99b27}.timer button:disabled{opacity:.5}.note{font-size:13px;color:var(--muted);line-height:1.5} footer{text-align:center;color:var(--muted);font-size:12px;margin-top:20px}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eier-Kochzeit-Rechner</title>
+<style>
+body{font-family:Arial,sans-serif;background:#fff8ea;margin:0;padding:20px;color:#222}
+.wrap{max-width:760px;margin:auto}
+.card{background:white;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 4px 18px #0002}
+h1{margin-top:0}
+label{display:block;font-weight:bold;margin-top:12px}
+input,select,button{width:100%;font-size:18px;padding:12px;margin-top:5px;border-radius:10px;border:1px solid #ccc}
+button{background:#f5b342;border:0;font-weight:bold;margin-top:18px}
+.time{font-size:52px;font-weight:800;text-align:center;margin:10px}
+.sub{text-align:center;color:#666}
+</style>
 </head>
+
 <body>
-  <main class="wrap">
-    <section class="hero"><div class="egg">🥚</div><h1>Eier-Kochzeit-Rechner</h1><p>Berechnung nach Ei-Masse, Starttemperatur, Höhe/Luftdruck und Nachgaren.</p></section>
-    <section class="card grid">
-      <div><label for="mass">Ei-Masse</label><input id="mass" type="number" min="35" max="100" step="1" value="70"><div class="hint">Gramm pro Ei, z. B. M ≈ 58 g, L ≈ 68–73 g</div></div>
-      <div><label for="temp">Starttemperatur</label><input id="temp" type="number" min="0" max="25" step="0.5" value="4"><div class="hint">°C, Kühlschrank meist ca. 4–7 °C</div></div>
-      <div><label for="pressure">Luftdruck optional</label><input id="pressure" type="number" min="0" max="1100" step="1" value="0"><div class="hint">hPa. Wenn 0, wird aus der Höhe geschätzt.</div></div>
-      <div><label for="height">Höhe über Meeresspiegel</label><input id="height" type="number" min="-100" max="3000" step="1" value="325"><div class="hint">Meter. Dortmund liegt grob um 80–250 m, je nach Stadtteil.</div></div>
-      <div><label for="after">Minuten bis Verzehr</label><input id="after" type="number" min="0" max="30" step="1" value="5"><div class="hint">Nachgaren nach dem Herausnehmen.</div></div>
-      <div><label>Abschrecken?</label><div class="switch"><button id="shockNo" class="active" type="button">Nein</button><button id="shockYes" type="button">Ja</button></div><div class="hint">Ja = schwächeres Nachgaren.</div></div>
-    </section>
-    <section class="card"><label>Garstufe</label><div class="stage" id="stages"></div></section>
-    <section class="card result">
-      <div><div class="sub">Empfohlene Kochzeit ab sprudelnd kochendem Wasser</div><div class="time" id="time">–</div><div id="badges"></div><p class="details" id="details"></p></div>
-      <div class="timerbox"><div class="sub">Countdown</div><div class="count" id="count">00:00</div><div class="timer"><button class="primary" id="start">Start</button><button id="pause" disabled>Pause</button><button id="reset">Reset</button></div><p class="note">Der Ton funktioniert auf iPhone/Android erst nach Tippen auf Start.</p></div>
-    </section>
-    <section class="card"><strong>Hinweise</strong><p class="note">Entweder Luftdruck eintragen oder Höhe verwenden. Wenn Luftdruck &gt; 0 ist, hat er Vorrang. Zeiten sind Näherungen; Eierform, Topf, Wassermenge und tatsächliche Kühlschranktemperatur können leicht abweichen.</p></section>
+<main class="wrap">
+  <section class="card">
+    <h1>🥚 Eier-Kochzeit-Rechner</h1>
+
+    <label for="mass">Ei-Masse in g</label>
+    <input id="mass" type="number" value="60">
+
+    <label for="temp">Starttemperatur in °C</label>
+    <input id="temp" type="number" value="7">
+
+    <label for="pressure">Luftdruck in hPa</label>
+    <input id="pressure" type="number" value="1013">
+
+    <label for="height">Höhe über Meer in m</label>
+    <input id="height" type="number" value="0">
+
+    <label for="after">Minuten bis zum Abschrecken</label>
+    <input id="after" type="number" value="0">
+
+    <label for="shock">Abschrecken?</label>
+    <select id="shock">
+      <option value="yes">Ja</option>
+      <option value="no">Nein</option>
+    </select>
+
+    <label for="stage">Garstufe</label>
+    <select id="stage">
+      <option value="soft">Weich</option>
+      <option value="medium">Wachsweich</option>
+      <option value="hard">Hart</option>
+    </select>
+
+    <button onclick="calculate()">Berechnen</button>
+  </section>
+
+  <section class="card">
+    <div class="sub">Empfohlene Kochzeit</div>
+    <div id="result" class="time">--:--</div>
+  </section>
+</main>
+
+<script>
+function calculate(){
+  const mass = Number(document.getElementById("mass").value);
+  const temp = Number(document.getElementById("temp").value);
+  const pressure = Number(document.getElementById("pressure").value);
+  const height = Number(document.getElementById("height").value);
+  const after = Number(document.getElementById("after").value);
+  const shock = document.getElementById("shock").value;
+  const stage = document.getElementById("stage").value;
+
+  let base;
+  if(stage === "soft") base = 300;
+  if(stage === "medium") base = 420;
+  if(stage === "hard") base = 600;
+
+  let seconds = base;
+
+  seconds += (mass - 60) * 6;
+  seconds += (7 - temp) * 8;
+  seconds += height * 0.04;
+  seconds += (1013 - pressure) * 0.5;
+
+  if(shock === "no") seconds -= after * 20;
+
+  if(seconds < 60) seconds = 60;
+
+  const min = Math.floor(seconds / 60);
+  const sec = Math.round(seconds % 60);
+
+  document.getElementById("result").textContent =
+    String(min).padStart(2,"0") + ":" + String(sec).padStart(2,"0");
+}
+</script>
+</body>
+</html>
