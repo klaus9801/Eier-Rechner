@@ -5,92 +5,363 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Eier-Kochzeit-Rechner</title>
 <style>
-body{font-family:Arial,sans-serif;background:#fff8ea;margin:0;padding:20px;color:#222}
-.wrap{max-width:760px;margin:auto}
-.card{background:white;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 4px 18px #0002}
-h1{margin-top:0}
-label{display:block;font-weight:bold;margin-top:12px}
-input,select,button{width:100%;font-size:18px;padding:12px;margin-top:5px;border-radius:10px;border:1px solid #ccc}
-button{background:#f5b342;border:0;font-weight:bold;margin-top:18px}
-.time{font-size:52px;font-weight:800;text-align:center;margin:10px}
-.sub{text-align:center;color:#666}
+:root{
+  --bg:#fff8ea;
+  --card:#fffdf8;
+  --text:#231f1a;
+  --muted:#766b60;
+  --line:#f0d7ad;
+  --orange:#f7a91f;
+  --orange2:#f28c00;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:linear-gradient(#fffaf0,#fff4dd);
+  color:var(--text);
+}
+.wrap{
+  max-width:980px;
+  margin:0 auto;
+  padding:28px 18px 40px;
+}
+.hero{
+  text-align:center;
+  margin-bottom:22px;
+}
+.hero h1{
+  font-size:44px;
+  margin:0;
+}
+.hero p{
+  margin:8px 0 0;
+  color:var(--muted);
+  font-size:20px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:26px;
+  padding:24px;
+  box-shadow:0 12px 30px #00000012;
+  margin-bottom:18px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px;
+}
+.field label{
+  display:block;
+  font-weight:800;
+  font-size:19px;
+  margin-bottom:8px;
+}
+.field small{
+  display:block;
+  color:var(--muted);
+  font-size:15px;
+  margin-top:7px;
+}
+input{
+  width:100%;
+  font-size:24px;
+  padding:15px 16px;
+  border-radius:15px;
+  border:1px solid var(--line);
+  background:white;
+}
+.toggle{
+  display:flex;
+  gap:12px;
+}
+.toggle button,.stage button{
+  border:1px solid var(--line);
+  background:white;
+  border-radius:16px;
+  padding:16px 22px;
+  font-size:20px;
+  font-weight:800;
+}
+.toggle button.active,.stage button.active{
+  background:linear-gradient(#ffc85a,#f7a91f);
+  border-color:#f28c00;
+}
+.stage{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:16px;
+  margin-top:10px;
+}
+.stage button{
+  min-height:88px;
+}
+.calculate{
+  width:100%;
+  border:0;
+  margin-top:22px;
+  padding:20px;
+  border-radius:17px;
+  font-size:24px;
+  font-weight:900;
+  background:linear-gradient(90deg,#f7a91f,#f28c00);
+}
+.result{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px;
+  align-items:center;
+}
+.time{
+  font-size:58px;
+  font-weight:900;
+  color:var(--orange2);
+  margin:10px 0;
+}
+.timerbox{
+  text-align:center;
+  border:1px dashed #e9c27d;
+  border-radius:22px;
+  padding:22px;
+}
+.count{
+  font-size:56px;
+  font-weight:900;
+}
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin-top:14px;
+}
+.controls button{
+  border:0;
+  border-radius:50px;
+  padding:14px 18px;
+  font-size:18px;
+  font-weight:900;
+  background:#fff1d8;
+}
+.controls button:first-child{
+  background:var(--orange);
+}
+.note{
+  color:var(--muted);
+  font-size:15px;
+}
+@media(max-width:720px){
+  .grid,.result{grid-template-columns:1fr}
+  .stage{grid-template-columns:1fr}
+  .hero h1{font-size:34px}
+}
 </style>
 </head>
 
 <body>
-<main class="wrap">
-  <section class="card">
+<div class="wrap">
+  <section class="hero">
     <h1>🥚 Eier-Kochzeit-Rechner</h1>
-
-    <label for="mass">Ei-Masse in g</label>
-    <input id="mass" type="number" value="60">
-
-    <label for="temp">Starttemperatur in °C</label>
-    <input id="temp" type="number" value="7">
-
-    <label for="pressure">Luftdruck in hPa</label>
-    <input id="pressure" type="number" value="1013">
-
-    <label for="height">Höhe über Meer in m</label>
-    <input id="height" type="number" value="0">
-
-    <label for="after">Minuten bis zum Abschrecken</label>
-    <input id="after" type="number" value="0">
-
-    <label for="shock">Abschrecken?</label>
-    <select id="shock">
-      <option value="yes">Ja</option>
-      <option value="no">Nein</option>
-    </select>
-
-    <label for="stage">Garstufe</label>
-    <select id="stage">
-      <option value="soft">Weich</option>
-      <option value="medium">Wachsweich</option>
-      <option value="hard">Hart</option>
-    </select>
-
-    <button onclick="calculate()">Berechnen</button>
+    <p>Die perfekte Kochzeit für dein Ei – genau berechnet.</p>
   </section>
 
   <section class="card">
-    <div class="sub">Empfohlene Kochzeit</div>
-    <div id="result" class="time">--:--</div>
+    <div class="grid">
+      <div class="field">
+        <label>Ei-Masse in g</label>
+        <input id="mass" type="number" value="70">
+        <small>Gramm pro Ei, z. B. M ≈ 58 g, L ≈ 68–73 g</small>
+      </div>
+
+      <div class="field">
+        <label>Starttemperatur in °C</label>
+        <input id="temp" type="number" value="7">
+        <small>Kühlschrank meist ca. 4–7 °C</small>
+      </div>
+
+      <div class="field">
+        <label>Luftdruck in hPa</label>
+        <input id="pressure" type="number" value="1013">
+        <small>Wenn 0, wird aus der Höhe geschätzt.</small>
+      </div>
+
+      <div class="field">
+        <label>Höhe über Meer in m</label>
+        <input id="height" type="number" value="0">
+        <small>Meter über Meeresspiegel.</small>
+      </div>
+
+      <div class="field">
+        <label>Minuten bis zum Abschrecken</label>
+        <input id="after" type="number" value="0">
+        <small>Nachgaren nach dem Herausnehmen.</small>
+      </div>
+
+      <div class="field">
+        <label>Abschrecken?</label>
+        <div class="toggle">
+          <button id="shockYes" onclick="setShock(true)">Ja</button>
+          <button id="shockNo" onclick="setShock(false)">Nein</button>
+        </div>
+        <small>Ja = schwächeres Nachgaren.</small>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:22px">
+      <label>Garstufe</label>
+      <div class="stage">
+        <button id="soft" onclick="setStage('soft')">🥚 Weich</button>
+        <button id="medium" onclick="setStage('medium')">🍳 Wachsweich</button>
+        <button id="hard" onclick="setStage('hard')">🟠 Hart</button>
+      </div>
+    </div>
+
+    <button class="calculate" onclick="calculate()">Berechnen</button>
   </section>
-</main>
+
+  <section class="card result">
+    <div>
+      <div class="note">Empfohlene Kochzeit ab sprudelnd kochendem Wasser</div>
+      <div id="result" class="time">--:--</div>
+      <strong>🔥 Guten Appetit!</strong>
+    </div>
+
+    <div class="timerbox">
+      <div class="note">Countdown</div>
+      <div id="countdown" class="count">00:00</div>
+      <div class="controls">
+        <button onclick="startTimer()">Start</button>
+        <button onclick="pauseTimer()">Pause</button>
+        <button onclick="resetTimer()">Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card note">
+    💡 Hinweis: Die Ergebnisse sind Richtwerte. Größe, Frische und Herd können das Ergebnis leicht beeinflussen.
+  </section>
+</div>
 
 <script>
+let stage = "medium";
+let shock = true;
+let timerSeconds = 0;
+let remaining = 0;
+let interval = null;
+
+function setStage(s){
+  stage = s;
+  ["soft","medium","hard"].forEach(id=>{
+    document.getElementById(id).classList.remove("active");
+  });
+  document.getElementById(s).classList.add("active");
+  calculate();
+}
+
+function setShock(v){
+  shock = v;
+  document.getElementById("shockYes").classList.toggle("active", v);
+  document.getElementById("shockNo").classList.toggle("active", !v);
+  calculate();
+}
+
+function estimatePressure(height){
+  return 1013.25 * Math.pow(1 - (0.0065 * height) / 288.15, 5.255);
+}
+
 function calculate(){
   const mass = Number(document.getElementById("mass").value);
   const temp = Number(document.getElementById("temp").value);
-  const pressure = Number(document.getElementById("pressure").value);
+  let pressure = Number(document.getElementById("pressure").value);
   const height = Number(document.getElementById("height").value);
   const after = Number(document.getElementById("after").value);
-  const shock = document.getElementById("shock").value;
-  const stage = document.getElementById("stage").value;
 
-  let base;
+  if(!pressure || pressure <= 0){
+    pressure = estimatePressure(height);
+  }
+
+  let base = 420;
   if(stage === "soft") base = 300;
   if(stage === "medium") base = 420;
   if(stage === "hard") base = 600;
 
   let seconds = base;
-
   seconds += (mass - 60) * 6;
   seconds += (7 - temp) * 8;
   seconds += height * 0.04;
   seconds += (1013 - pressure) * 0.5;
 
-  if(shock === "no") seconds -= after * 20;
+  if(!shock){
+    seconds -= after * 20;
+  } else {
+    seconds -= after * 6;
+  }
 
   if(seconds < 60) seconds = 60;
 
+  timerSeconds = Math.round(seconds);
+  remaining = timerSeconds;
+
+  showTime("result", timerSeconds);
+  showTime("countdown", remaining);
+}
+
+function showTime(id, seconds){
   const min = Math.floor(seconds / 60);
   const sec = Math.round(seconds % 60);
-
-  document.getElementById("result").textContent =
+  document.getElementById(id).textContent =
     String(min).padStart(2,"0") + ":" + String(sec).padStart(2,"0");
 }
+
+function startTimer(){
+  if(remaining <= 0) remaining = timerSeconds;
+  if(interval) return;
+
+  interval = setInterval(()=>{
+    remaining--;
+    showTime("countdown", remaining);
+
+    if(remaining <= 0){
+      pauseTimer();
+      beep();
+      alert("Die Eier sind fertig!");
+    }
+  },1000);
+}
+
+function pauseTimer(){
+  if(interval){
+    clearInterval(interval);
+    interval = null;
+  }
+}
+
+function resetTimer(){
+  pauseTimer();
+  remaining = timerSeconds;
+  showTime("countdown", remaining);
+}
+
+function beep(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    gain.gain.value = 0.2;
+    osc.start();
+    setTimeout(()=>{
+      osc.stop();
+      ctx.close();
+    },500);
+  }catch(e){}
+}
+
+setShock(true);
+setStage("medium");
+calculate();
 </script>
 </body>
 </html>
